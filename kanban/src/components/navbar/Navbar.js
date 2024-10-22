@@ -12,11 +12,13 @@ function Navbar(props) {
 
   const changeGrouping = (event) => {
     props.setSelectedGrouping(event.target.value);
+    localStorage.setItem("grouping", event.target.value);
     toggleDropdownOpen();
   };
 
   const changeOrdering = (event) => {
     props.setSelectedOrdering(event.target.value);
+    localStorage.setItem("ordering", event.target.value);
     toggleDropdownOpen();
   };
 

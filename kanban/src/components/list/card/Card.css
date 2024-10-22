@@ -1,0 +1,117 @@
+.card .wrapper {
+  background-color: white;
+
+  padding: 1rem;
+
+  border-radius: 10px;
+  box-shadow: 0 0 5px 2px #dfe4e9;
+  overflow: hidden;
+}
+
+.card .card-details {
+  width: 100%;
+}
+
+.card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-right: 0.3rem;
+}
+
+.card .circles {
+  position: relative;
+}
+
+.card .circle {
+  height: 25px;
+  width: 25px;
+  background-color: orange;
+  border-radius: 50%;
+
+  font-size: xx-small;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card .nested-circle {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: black;
+  border: 2px solid white;
+  position: absolute;
+  bottom: -10%;
+
+  left: 50%;
+}
+
+.card #card-id {
+  font-size: medium;
+  color: #808184;
+  margin: 0;
+}
+
+.card #card-title {
+  font-size: medium;
+  font-weight: 600;
+  /* margin: 0.5rem 0 0 0; */
+}
+
+.card .title-wrapper {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  gap: 1rem;
+}
+
+.card .tag-wrapper {
+  margin-top: 1rem;
+  width: 70%;
+
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card .tag-wrapper .img-cont {
+  border: 1.5px solid #dfe4e9;
+  border-radius: 5px;
+  padding: 0.5rem;
+}
+
+.card #card-feature {
+  border: 1.5px solid #dfe4e9;
+  border-radius: 5px;
+  padding: 0.5rem;
+
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.card .dot {
+  color: #808184;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.card .dot:before {
+  background-color: #808184;
+  border-radius: 50%;
+  content: " ";
+  display: inline-block;
+  height: 10px;
+  margin-right: 0.2rem;
+  width: 10px;
+}
+
+.card .img-cont {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -17,6 +17,8 @@ function App() {
       : localStorage.getItem("ordering")
   );
 
+  const [loading, setLoading] = useState(false);
+
   const [apiData, setApiData] = useState({});
 
   const [groups, setGroups] = useState([]);
@@ -39,6 +41,9 @@ function App() {
         groups.priority.push(ticket.priority);
       }
     });
+
+    groups.status.push("Done");
+    groups.status.push("Cancel");
 
     setGroups(groups);
   };
@@ -63,6 +68,7 @@ function App() {
       groups.priority.map((priority) => {
         list[priority] = [];
       });
+
       data.tickets.map((ticket) => {
         list[ticket.priority].push(ticket);
       });
@@ -85,7 +91,7 @@ function App() {
     if (selectedOrdering === "priority") {
       for (let key in list) {
         list[key].sort((a, b) => {
-          return a.priority - b.priority;
+          return b.priority - a.priority;
         });
       }
     } else if (selectedOrdering === "title") {
@@ -104,7 +110,6 @@ function App() {
         });
       }
     }
-
     setSortedData(list);
   };
 
@@ -121,22 +126,22 @@ function App() {
   useEffect(() => {
     if (Object.keys(apiData).length !== 0) {
       setBoard(apiData);
+      setLoading(false);
     }
   }, [selectedGrouping, selectedOrdering, apiData]);
 
   return (
     <div className="app">
-      <div className="wrapper">
-        <Navbar
-          setSelectedGrouping={setSelectedGrouping}
-          setSelectedOrdering={setSelectedOrdering}
-          selectedGrouping={selectedGrouping}
-          selectedOrdering={selectedOrdering}
-        />
-        <p>{selectedGrouping}</p>
-        <p>{selectedOrdering}</p>
-        <List sortedData={sortedData} />
+      <Navbar
+        setSelectedGrouping={setSelectedGrouping}
+        setSelectedOrdering={setSelectedOrdering}
+        selectedGrouping={selectedGrouping}
+        selectedOrdering={selectedOrdering}
+      />
+      <div className="cont">
+        <List sortedData={sortedData} selectedGrouping={selectedGrouping} />
       </div>
+      {loading && <div className="loading">Loading...</div>}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Navbar.css";
-import DisplayIcon from "../../Assets/Display.svg";
-import DownIcon from "../../Assets/down.svg";
+import DisplayIcon from "../../assets/Display.svg";
+import DownIcon from "../../assets/down.svg";
 
 function Navbar(props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);

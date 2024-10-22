@@ -3,7 +3,7 @@ import "./List.css";
 
 import Card from "./card/Card";
 
-import ThreeDotIcon from "../../assets/3dm.svg";
+import ThreeDotIcon from "../../assets/three.svg";
 import AddIcon from "../../assets/add.svg";
 import HighPIcon from "../../assets/highP.svg";
 import LowPIcon from "../../assets/lowP.svg";

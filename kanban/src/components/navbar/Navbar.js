@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Navbar.css";
-import DisplayIcon from "../../assets/Display.svg";
+import DisplayIcon from "../../assets/dis.svg";
 import DownIcon from "../../assets/down.svg";
 
 function Navbar(props) {

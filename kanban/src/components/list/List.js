@@ -1,24 +1,26 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import "./List.css";
-
 import Card from "./card/Card";
+import { useSelector } from "react-redux";
 
-import ThreeDotIcon from "../../assets/three.svg";
-import AddIcon from "../../assets/add.svg";
-import HighPIcon from "../../assets/highP.svg";
-import LowPIcon from "../../assets/lowP.svg";
-import MedPIcon from "../../assets/medP.svg";
-import NoPIcon from "../../assets/noP.svg";
-import UrgentPOIcon from "../../assets/urgentPO.svg";
+import ThreeDotIcon from "../../Assets/three.svg";
+import AddIcon from "../../Assets/add.svg";
+import HighPIcon from "../../Assets/highP.svg";
+import LowPIcon from "../../Assets/lowP.svg";
+import MedPIcon from "../../Assets/medP.svg";
+import NoPIcon from "../../Assets/noP.svg";
+import UrgentPOIcon from "../../Assets/urgentPO.svg";
 
-import DoneIcon from "../../assets/done.svg";
-import InProgressIcon from "../../assets/in-progress.svg";
-import ToDoIcon from "../../assets/To-do.svg";
-import BacklogIcon from "../../assets/backlog.svg";
-import CancelIcon from "../../assets/cancel.svg";
+import DoneIcon from "../../Assets/done.svg";
+import InProgressIcon from "../../Assets/in-progress.svg";
+import ToDoIcon from "../../Assets/To-do.svg";
+import BacklogIcon from "../../Assets/backlog.svg";
+import CancelIcon from "../../Assets/cancel.svg";
 
-function List(props) {
-  const [data, setData] = useState({});
+function List() {
+  const { sortedData, grouping: selectedGrouping } = useSelector(
+    (state) => state.kanban
+  );
 
   const iconsListPriority = {
     "Urgent Priority": UrgentPOIcon,
@@ -44,51 +46,38 @@ function List(props) {
     return "No Priority";
   };
 
-  useEffect(() => {
-    if (Object.keys(props.sortedData).length !== 0) {
-      setData(props.sortedData);
-    }
-  }, [props.sortedData]);
   return (
     <div className="list">
       <div className="wrapper">
-        {Object.keys(data).map((key) => (
+        {Object.keys(sortedData).map((key) => (
           <div key={key} className="list-group">
             <div className="list-header">
               <div className="list-details">
                 <div className="key-name-wrapper">
                   <div className="img-cont">
-                    {props.selectedGrouping === "priority" ? (
+                    {selectedGrouping === "priority" ? (
                       <img
                         src={iconsListPriority[toPriorityName(key)]}
                         alt="Add Icon"
                       />
-                    ) : props.selectedGrouping === "user" ? (
+                    ) : selectedGrouping === "user" ? (
                       <div className="circles">
                         <div className="circle">{key[0]}</div>
-                        <div
-                          className="nested-circle"
-                          // style={{
-                          //   backgroundColor:
-                          //     data[key][0].user.available === true
-                          //       ? "green"
-                          //       : "red",
-                          // }}
-                        ></div>
+                        <div className="nested-circle"></div>
                       </div>
-                    ) : props.selectedGrouping === "status" ? (
+                    ) : selectedGrouping === "status" ? (
                       <img src={getStatusIcon(key)} alt="Add Icon" />
                     ) : (
                       <></>
                     )}
                   </div>
-                  {props.selectedGrouping === "priority" ? (
+                  {selectedGrouping === "priority" ? (
                     <p id="key-name">{toPriorityName(key)}</p>
                   ) : (
                     <p id="key-name">{key}</p>
                   )}
                 </div>
-                <p id="key-length">{data[key].length}</p>
+                <p id="key-length">{sortedData[key].length}</p>
               </div>
               <div className="options">
                 <div className="img-cont">
@@ -100,10 +89,10 @@ function List(props) {
               </div>
             </div>
             <div className="card-cont">
-              {data[key].map((ticket) => (
+              {sortedData[key].map((ticket) => (
                 <Card
                   key={ticket.id}
-                  grouping={props.selectedGrouping}
+                  grouping={selectedGrouping}
                   id={ticket.id}
                   title={ticket.title}
                   tag={ticket.tag[0]}

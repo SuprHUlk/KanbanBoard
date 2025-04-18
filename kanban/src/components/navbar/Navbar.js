@@ -1,24 +1,27 @@
 import React, { useState } from "react";
 import "./Navbar.css";
-import DisplayIcon from "../../assets/dis.svg";
-import DownIcon from "../../assets/down.svg";
+import DisplayIcon from "../../Assets/dis.svg";
+import DownIcon from "../../Assets/down.svg";
+import { useSelector, useDispatch } from "react-redux";
+import { setGrouping, setOrdering } from "../../store/kanbanSlice";
 
-function Navbar(props) {
+function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { grouping: selectedGrouping, ordering: selectedOrdering } =
+    useSelector((state) => state.kanban);
 
   const toggleDropdownOpen = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
   const changeGrouping = (event) => {
-    props.setSelectedGrouping(event.target.value);
-    localStorage.setItem("grouping", event.target.value);
+    dispatch(setGrouping(event.target.value));
     toggleDropdownOpen();
   };
 
   const changeOrdering = (event) => {
-    props.setSelectedOrdering(event.target.value);
-    localStorage.setItem("ordering", event.target.value);
+    dispatch(setOrdering(event.target.value));
     toggleDropdownOpen();
   };
 
@@ -40,7 +43,7 @@ function Navbar(props) {
               <div className="group">
                 <p>Grouping</p>
                 <select
-                  value={props.selectedGrouping}
+                  value={selectedGrouping}
                   onChange={changeGrouping}
                   name="group"
                   id="group"
@@ -53,7 +56,7 @@ function Navbar(props) {
               <div className="order">
                 <p>Ordering</p>
                 <select
-                  value={props.selectedOrdering}
+                  value={selectedOrdering}
                   onChange={changeOrdering}
                   name="order"
                   id="order"

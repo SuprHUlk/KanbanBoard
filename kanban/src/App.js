@@ -1,40 +1,31 @@
 import "./App.css";
 import Navbar from "./components/navbar/Navbar";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { api } from "./services/apiService.js";
 import List from "./components/list/List";
+import { useSelector, useDispatch } from "react-redux";
+import { setApiData, setGroups, setSortedData } from "./store/kanbanSlice";
 
 function App() {
-  const [selectedGrouping, setSelectedGrouping] = useState(
-    localStorage.getItem("grouping") === null
-      ? "status"
-      : localStorage.getItem("grouping")
-  );
-
-  const [selectedOrdering, setSelectedOrdering] = useState(
-    localStorage.getItem("ordering") === null
-      ? "priority"
-      : localStorage.getItem("ordering")
-  );
-
-  const [loading, setLoading] = useState(false);
-
-  const [apiData, setApiData] = useState({});
-
-  const [groups, setGroups] = useState([]);
-
-  const [sortedData, setSortedData] = useState({});
+  const dispatch = useDispatch();
+  const {
+    grouping: selectedGrouping,
+    ordering: selectedOrdering,
+    apiData,
+    groups,
+  } = useSelector((state) => state.kanban);
 
   const addGroups = (data) => {
     let groups = { status: [], user: [], priority: [] };
 
-    data.tickets.map((ticket) => {
+    data.tickets.forEach((ticket) => {
       if (!groups.status.includes(ticket.status)) {
         groups.status.push(ticket.status);
       }
 
-      if (!groups.user.includes(ticket.user.name)) {
-        groups.user.push(ticket.user.name);
+      const user = data.users.find((u) => u.id === ticket.userId);
+      if (user && !groups.user.includes(user.name)) {
+        groups.user.push(user.name);
       }
 
       if (!groups.priority.includes(ticket.priority)) {
@@ -45,103 +36,90 @@ function App() {
     groups.status.push("Done");
     groups.status.push("Cancel");
 
-    setGroups(groups);
+    dispatch(setGroups(groups));
   };
 
   const addUserToTickets = (data) => {
     const { tickets, users } = data;
-
-    const ticketsWithUsers = {};
-
-    ticketsWithUsers["tickets"] = tickets.map((ticket) => {
-      const user = users.find((user) => user.id === ticket.userId);
-      return { ...ticket, user };
-    });
-
-    return ticketsWithUsers;
+    return {
+      tickets: tickets.map((ticket) => ({
+        ...ticket,
+        user: users.find((user) => user.id === ticket.userId) || {
+          id: ticket.userId,
+          name: "Unknown",
+          available: false,
+        },
+      })),
+    };
   };
 
   const setBoard = (data) => {
     let list = {};
 
     if (selectedGrouping === "priority") {
-      groups.priority.map((priority) => {
+      groups.priority.forEach((priority) => {
         list[priority] = [];
       });
 
-      data.tickets.map((ticket) => {
+      data.tickets.forEach((ticket) => {
         list[ticket.priority].push(ticket);
       });
     } else if (selectedGrouping === "status") {
-      groups.status.map((status) => {
+      groups.status.forEach((status) => {
         list[status] = [];
       });
-      data.tickets.map((ticket) => {
+      data.tickets.forEach((ticket) => {
         list[ticket.status].push(ticket);
       });
     } else if (selectedGrouping === "user") {
-      groups.user.map((user) => {
+      groups.user.forEach((user) => {
         list[user] = [];
       });
-      data.tickets.map((ticket) => {
-        list[ticket.user.name].push(ticket);
+      data.tickets.forEach((ticket) => {
+        if (ticket.user) {
+          list[ticket.user.name].push(ticket);
+        }
       });
     }
 
     if (selectedOrdering === "priority") {
       for (let key in list) {
-        list[key].sort((a, b) => {
-          return b.priority - a.priority;
-        });
+        list[key].sort((a, b) => b.priority - a.priority);
       }
     } else if (selectedOrdering === "title") {
       for (let key in list) {
         list[key].sort((a, b) => {
           const titleA = a.title.toLowerCase();
           const titleB = b.title.toLowerCase();
-
-          if (titleA < titleB) {
-            return -1;
-          } else if (titleA > titleB) {
-            return 1;
-          } else {
-            return 0;
-          }
+          return titleA < titleB ? -1 : titleA > titleB ? 1 : 0;
         });
       }
     }
-    setSortedData(list);
+    dispatch(setSortedData(list));
   };
 
   useEffect(() => {
     const getData = async () => {
       const data = await api();
       const updateData = addUserToTickets(data);
-      setApiData(updateData);
-      addGroups(updateData);
+      dispatch(setApiData(updateData));
+      addGroups(data);
     };
     getData();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (Object.keys(apiData).length !== 0) {
       setBoard(apiData);
-      setLoading(false);
     }
-  }, [selectedGrouping, selectedOrdering, apiData]);
+  }, [selectedGrouping, selectedOrdering, apiData, groups, dispatch]);
 
   return (
     <div className="app">
-      <Navbar
-        setSelectedGrouping={setSelectedGrouping}
-        setSelectedOrdering={setSelectedOrdering}
-        selectedGrouping={selectedGrouping}
-        selectedOrdering={selectedOrdering}
-      />
+      <Navbar />
       <div className="cont">
-        <List sortedData={sortedData} selectedGrouping={selectedGrouping} />
+        <List selectedGrouping={selectedGrouping} />
       </div>
-      {loading && <div className="loading">Loading...</div>}
     </div>
   );
 }

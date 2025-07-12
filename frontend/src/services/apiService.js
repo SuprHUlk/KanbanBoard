@@ -1,4 +1,4 @@
-const API_URL = "https://kanban-board-857105019651.asia-south1.run.app";
+const API_URL = "https://kanban-board-857105019651.asia-south1.run.app/api";
 
 export const initializeDatabase = async () => {
     try {
